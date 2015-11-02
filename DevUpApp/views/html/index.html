@@ -1,0 +1,14 @@
+<script type="text/javascript" src="/javascripts/hellojade.js"></script>
+<md-toolbar class="md-primary"></md-toolbar>
+<div ng-controller='loginCtrl' style="height:100%"> Hello html!
+    <md-button class="md-primary">test angularmaterial</md-button>
+    <div layout="row" flex style="height:100%">
+        <div flex='40' class="md-whiteframe-1dp"> div one</div>
+        <div flex='60'>div two</div>
+    </div>
+</div>
+<script type="text/javascript">
+angular.module('login', ['ngMaterial']).controller('loginCtrl',['$scope','$rootScope','ngMaterial', function($scope, $rootScope, ngMaterial) {
+    console.log("Hello Angular!!!");
+}]);
+</script>
