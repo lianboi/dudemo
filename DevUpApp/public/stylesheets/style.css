@@ -1,9 +1,16 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  height:100vh;
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    height: 100vh;
 }
 
 a {
-  color: #00B7FF;
+    color: #00B7FF;
+}
+
+.mainContainer {
+    height: -webkit-calc(100% - 64px);
+    width: 100%;
+    background: green;
+    overflow: auto
 }

@@ -4,9 +4,11 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/angular-material.min.css')
-    script(type='text/javascript', src='/javascripts/lib/angular/angular.js')
-    script(type='text/javascript', src='/javascripts/lib/angular-aria/angular-aria.js')
-    script(type='text/javascript', src='/javascripts/lib/angular-animate/angular-animate.js')
-    script(type='text/javascript', src='/javascripts/lib/angular-material/angular-material.js')
-  body(ng-app='login', layout='column', class="md-body-1", md-default-theme, style="height:100vh")
+    
+  body(ng-app='devUp', layout='column', class="md-body-1", md-default-theme, style="height:100vh")
    block content
+   script(type='text/javascript', src='/javascripts/lib/angular/angular.js')
+   script(type='text/javascript', src='/javascripts/lib/angular-aria/angular-aria.js')
+   script(type='text/javascript', src='/javascripts/lib/angular-animate/angular-animate.js')
+   script(type='text/javascript', src='/javascripts/lib/angular-material/angular-material.js')
+   script(type="text/javascript", src="/javascripts/login.js")
