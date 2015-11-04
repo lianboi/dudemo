@@ -12,5 +12,13 @@ a {
     height: -webkit-calc(100% - 64px);
     width: 100%;
     background: green;
-    overflow: auto
+    overflow: auto;
+    width:100%;
+}
+
+div{
+	display:inherit;
+}
+#theview{
+	height:-webkit-calc(100% - 64px);
 }

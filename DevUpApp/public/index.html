@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DevUp - Index111</title>
+    <link rel='stylesheet' href='../stylesheets/style.css' />
+    <link rel='stylesheet' href='../stylesheets/angular-material.min.css' />
+</head>
+
+<body ng-app='devUp' layout='column' class="md-body-1" md-default-theme style="height:100vh">
+    <md-toolbar>
+        <div>Heading toolbar</div>
+        <div ng-controller="httptest" ng-click="testclick()">
+            <div layout='row' layout-fill style="width:100%; height:100%">
+                <!--  <a flex ng-href="/index">to index</a> -->
+                <div flex>second div</div>
+                <div flex>third div</div>
+                <div flex> <a ng-href="#/test">testclick</a></div>
+            </div>
+        </div>
+    </md-toolbar>
+    <div style="width:300px; margin: 0 auto;" ng-controller='loginPage' class="md-padding">
+        <md-label>Provide username and password to login</md-label>
+        <form>
+            <md-input-container>
+                <label>Username</label>
+                <input type="text" ng-model="user.name">
+            </md-input-container>
+            <md-input-container>
+                <label>password</label>
+                <input type="password" ng-model="user.password">
+            </md-input-container>
+            <md-button ng-click="submit()" class="md-primary">submit</md-button>
+        </form>
+    </div>
+    <div id="theview" layout='row' style="overflow:auto" ng-view class=""></div>
+    <script type='text/javascript' src='../javascripts/lib/angular.min.js'></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0/angular-route.min.js"></script>
+    <script type='text/javascript' src='../javascripts/lib/angular-aria/angular-aria.js'></script>
+    <script type='text/javascript' src='../javascripts/lib/angular-animate/angular-animate.js'></script>
+    <script type='text/javascript' src='../javascripts/lib/angular-material.min.js'></script>
+    <script type="text/javascript" src="../javascripts/app.js"></script>
+    <script type="text/javascript" src="../javascripts/controllers/login.js"></script>
+</body>
+
+</html>
