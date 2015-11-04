@@ -6,11 +6,15 @@ devUp.config(['$routeProvider',
         when('/test', {
             templateUrl: 'views/test.html',
             controller: 'test'
-        })/*.
+        }).
         when('/',{
         	templateUrl: 'views/login.html',
-        	controller: 'loginCtrl'
-        })*/
+        	controller: ''
+        }).
+        when('/main',{
+            templateUrl: 'views/main.html',
+            controller: 'mainCtrl'
+        })
     }
 ]);
 

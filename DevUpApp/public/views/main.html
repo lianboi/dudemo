@@ -1,0 +1,17 @@
+<div layout="column" layout-align="centre">
+	<div layout="row" flex="50">
+		<md-button class="md-primary" ng-click="createApp()">create a DevApp</md-button>
+	</div>
+	<div layout="row" ng-show="createApp.show" class="md-padding">
+		<div flex layout="row">
+			<md-label> choose the app to be connected </md-label>
+			<span ng-hide='items.selected' ng-model="items.id" ng-repeat="items in createApp.apps" ng-click="addApps()" class="md-padding">{{items.name}}</span>
+		</div>
+		<div flex='30' layout='column'>
+			<div flex ng-repeat="items in createApp.selectedApps" ng-model="items.id" class="md-padding">
+				{{items.name}}
+				<span ng-click="removeApp()">X</span>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,11 +1,14 @@
-<div layout="row">
-  <div flex>
-    [flex]
-  </div>
-  <div flex>
-    [flex]
-  </div>
-  <div flex hide-sm>
-    [flex]
-  </div>
-</div>
+<div style="width:300px; margin: 0 auto;" ng-controller='loginPage' class="md-padding">
+        <md-label>Provide username and password to login</md-label>
+        <form>
+            <md-input-container>
+                <label>Username</label>
+                <input type="text" ng-model="user.name">
+            </md-input-container>
+            <md-input-container>
+                <label>password</label>
+                <input type="password" ng-model="user.password">
+            </md-input-container>
+            <md-button ng-click="submit()" class="md-primary">submit</md-button>
+        </form>
+    </div>
