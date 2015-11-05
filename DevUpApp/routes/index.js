@@ -41,7 +41,12 @@ router.post('/login', function(req, res, next) {
 /*** jira authentication****/
 router.post('/authjira', function(req, res, next){
     console.log(req.body);
-    res.send(req.body);
+    var curlString = 'curl -D- GET -H "Authorization: Basic '+ btoa(req.body.data.jira.username+':'+req.body.data.jira.password)+'"-H "Content-Type: application/json " "' +req.body.data.jira.url+'/auth/1/session"';
+    console.log(curlString);
+    sys.exec(curlString, function(error, stdout, stderr){
+        var status = stdout.split('\n')[0];
+        res.send(status);
+    });
 });
 
 router.post('/testAuth', function(req, res, next) {
