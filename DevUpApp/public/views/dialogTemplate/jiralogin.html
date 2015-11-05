@@ -1,0 +1,37 @@
+<md-dialog class="md-padding">
+    <div layout="column" flex='100'>
+        <div layout="column" flex>
+            <div flex>please provide the url of your jira website*</div>
+            <div flex>
+                <md-input-container>
+                	<md-label>url</md-label>
+                	<input ng-model="jira.url" type="text">
+                </md-input-container>
+            </div>
+        </div>
+        <div layout="column" flex>
+            <div flex>your username for the jira website*</div>
+            <div flex>
+                <md-input-container>
+                	<md-label>username</md-label>
+                	<input ng-model="jira.username" type="text">
+                </md-input-container>
+            </div>
+        </div>
+        <div layout="column" flex>
+            <div flex>your password for the jira website*</div>
+            <div flex>
+                <md-input-container>
+                	<md-label>password</md-label>
+                	<input ng-model="jira.password" type="password">
+                </md-input-container>
+            </div>
+        </div>
+    </div>
+    <div layout="row" layout-align="centre centre">
+    	<div flex=25></div>
+        <md-button flex=25 ng-click="submit()" class="md-primary">submit</md-button>
+        <md-button flex=25 ng-click="cancel()" class="md-primary">cancel</md-button>
+        <div flex=25></div>
+    </div>
+</md-dialog>

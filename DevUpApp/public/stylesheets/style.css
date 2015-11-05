@@ -16,8 +16,11 @@ a {
     width:100%;
 }
 
-div{
-	display:inherit;
+div.layout-column{
+	display:block;
+}
+div.layout-row{
+	display:inline-block;
 }
 #theview{
 	height:-webkit-calc(100% - 64px);

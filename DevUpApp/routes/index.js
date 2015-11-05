@@ -38,6 +38,12 @@ router.post('/login', function(req, res, next) {
     res.send("success!");
 });
 
+/*** jira authentication****/
+router.post('/authjira', function(req, res, next){
+    console.log(req.body);
+    res.send(req.body);
+});
+
 router.post('/testAuth', function(req, res, next) {
     /*var result = sys.exec('curl -D- -X GET -H "Authorization: Basic YWRtaW46dGVjaG5vY3ViZQ=" -H "Content-Type: application/json" "https://lbjiratest.atlassian.net/rest/auth/1/session"', function (error, stdout, stderr) {
     	if(!error){
