@@ -32,7 +32,7 @@ devUp.controller('mainCtrl', ['$scope', '$http', '$mdDialog', function($scope, $
             templateUrl: '/views/dialogTemplate/jiralogin.html',
         });
 	}
-	$scope.createApp.apps = [{'id':1, 'name':'Jira'},{'id':2, 'name':'Github'}];
+	$scope.createApp.apps = [{'id':1, 'name':'Jira'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'},{'id':2, 'name':'Github'}];
 	$scope.createApp.selectedApps = [];
 }]);
 
