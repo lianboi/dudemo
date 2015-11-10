@@ -3,6 +3,7 @@ var router = express.Router();
 var sys = require('sys');
 var mysql = require('mysql');
 var request = require('request');
+var bcrypt = require('bcrypt-nodejs');
 
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -34,10 +35,50 @@ router.get('/httpcalltest', function(req, res, next) {
     res.send("you got it!");
 });
 
+/**user login **/
 router.post('/login', function(req, res, next) {
-    console.log(req);
-    res.send("success!");
+    var user = req.body.data.user;
+    console.log(user);
+    var statement = 'SELECT * FROM user WHERE username = "' + user.username +'" limit 1';
+    console.log(statement);
+    connection.query(statement, function(error, rows, fields){
+        if(!error && rows.length > 0){
+            console.log(rows[0]['hash']);
+            bcrypt.compare(user.password, rows[0]['hash'], function(err, result){
+                if(result){
+                    res.send("login success!");
+                } else {
+                    res.send("login failed!");
+                }
+            });
+        } else {
+            res.send(error);
+           // res.send("login failed!");
+        }
+    });
 });
+
+/** adding a user **/
+router.post('/adduser', function(req, res, next){
+    console.log(req.body);
+    //console.log(JSON.parse(req.body.data));
+    
+    var user = req.body.data.user;
+    
+    var salt = bcrypt.genSaltSync();
+    var hash = bcrypt.hashSync(user.password, salt);
+    console.log(user);
+    var statement = 'INSERT INTO user(username, firstname, lastname, hash, salt) values("' + 
+        user.username+'","'+user.firstname+'","'+user.lastname+'","'+hash+'","'+salt+'")';
+    console.log(hash);
+    connection.query(statement, function(error, rows, fields){
+        console.log(statement);
+        console.log(error);
+        console.log(rows, fields);
+        res.end("user successfully added!");
+    });
+});
+
 
 /*** jira authentication****/
 router.post('/authjira', function(req, res, next) {
@@ -45,16 +86,10 @@ router.post('/authjira', function(req, res, next) {
     var options = {
         url: req.body.data.jira.url + '/rest/auth/1/session',//"https://lbjiratest.atlassian.net/rest/api/2/search?jql=project=test",//',
         method: 'GET',
-        /*headers: {
-            'Authorization': "Basic " + new Buffer(req.body.data.jira.username + ':' + req.body.data.jira.password).toString('base64'),
-            'Content-Type': 'application/json'
-        }*/
         headers: {"Authorization": "Basic " + new Buffer(req.body.data.jira.username + ':' + req.body.data.jira.password).toString('base64')}
     };
     console.log(options);
     function callback(err,response, body){
-        //console.log(response);
-        //console.log(body);
         res.send(response);        
     }
     request(options, callback);
