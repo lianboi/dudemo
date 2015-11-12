@@ -95,6 +95,11 @@ router.post('/authjira', function(req, res, next) {
     request(options, callback);
 });
 
+/** getting jira project ***/
+router.get('/jiraproject', function(req, res, next){
+    var inputdata = "";
+});
+
 router.post('/testAuth', function(req, res, next) {
     /*var result = sys.exec('curl -D- -X GET -H "Authorization: Basic YWRtaW46dGVjaG5vY3ViZQ=" -H "Content-Type: application/json" "https://lbjiratest.atlassian.net/rest/auth/1/session"', function (error, stdout, stderr) {
         if(!error){
