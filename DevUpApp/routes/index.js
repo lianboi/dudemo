@@ -46,13 +46,13 @@ router.post('/login', function(req, res, next) {
             console.log(rows[0]['hash']);
             bcrypt.compare(user.password, rows[0]['hash'], function(err, result) {
                 if (result) {
-                    res.send("login success!");
+                    res.send({"status":"Ok", "message":"login success!"});
                 } else {
-                    res.send("login failed!");
+                    res.send({"status":"Failed","message":"invalid password!"});
                 }
             });
         } else {
-            res.send(error);
+            res.send({"status":"Failed","message":"invalid username or password!"});
             // res.send("login failed!");
         }
     });

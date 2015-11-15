@@ -5,19 +5,21 @@ devUp.controller('loginCtrl', ['$scope', '$http', function($scope, $http) {
 	}
 }]);
 
-
-
 devUp.controller('loginPage', ['$scope', '$http', '$location', function($scope, $http, $location) {
 	$scope.submit = function(){
-		$http.post('http://localhost:3000/test',{username:"lian", password:"thomte"}).then(function(res){
+        $scope.user = {};
+        $scope.user.username = $scope.name;
+        $scope.user.password = $scope.password;
+        console.log($scope.user);
+		$http.post('http://localhost:3000/login',{data:$scope.user}).then(function(res){
 			console.log(res);
+
 		}, function(err){
 			console.log(err);
 		});
-		$location.path('/main')
+		//$location.path('/main')
 	}
 }]);
-
 
 devUp.controller('mainCtrl', ['$scope', '$http', '$mdDialog', function($scope, $http, $mdDialog) {
 	$scope.createApp = function(){
