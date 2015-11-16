@@ -15,6 +15,13 @@ a {
     overflow: auto;
     width:100%;
 }
+.chooseapp:hover{
+	background-color: tan;
+}
+
+.chooseapp{
+	margin:1px;
+}
 
 /*div.layout-column{
 	display:block;

@@ -15,6 +15,10 @@ devUp.config(['$routeProvider',
             templateUrl: 'views/main.html',
             controller: 'mainCtrl'
         })
+        .when('/callback_github',{
+        	templateUrl: 'views/main.html',
+            controller: 'githubOauthCtrl'
+        })
     }
 ]);
 

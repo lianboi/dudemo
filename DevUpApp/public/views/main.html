@@ -6,39 +6,53 @@
         <span flex></span>
     </div>
     <div layout="row" ng-show="createApp.show" class="md-padding">
-        <div flex='40' layout="column" style="border:1px solid green; border-radius:10px" class="md-padding">
+        <div flex='40' layout="column" style=" border-radius:10px" class="md-padding md-whiteframe-z4"> <!-- border:1px solid green; -->
             <div>
-                <md-content>
-                    <md-label> choose the app to be connected </md-label>
-                </md-content>
+                <md-label class="md-padding" style="font-weight:bold"> Choose the apps to be connected </md-label>
             </div>
             <div style="clear:both"></div>
-            <div style="width:100%; border:1px solid red">
-                <div ng-hide='items.selected' ng-model="items.id" ng-repeat="items in createApp.apps" ng-click="addApps()" class="md-padding" style="display: inline-block; float:left">{{items.name}}</div>
+            <div style="width:100%; ">
+                <!-- border:1px solid red -->
+                <div ng-hide='items.selected' ng-model="items.id" ng-repeat="items in createApp.apps" ng-click="addApps($event, items.id, items.name)" class="md-padding chooseapp" style="display: inline-block; float:left; cursor:pointer;">{{items.name}}</div>
             </div>
         </div>
-        <div flex='20' layout='column' class="md-padding">
+        <div flex='5'></div>
+        <div flex='20' layout='column' class="md-padding md-whiteframe-z4" style=" border-radius:10px">
             <div>
-                <md-content>
-                    <md-label> selected Apps </md-label>
-                </md-content>
+               
+                    <md-label class="md-padding" style="font-weight:bold"> Selected Apps </md-label>
+                
             </div>
             <div flex ng-repeat="items in createApp.selectedApps" ng-model="items.id" class="md-padding">
                 {{items.name}}
                 <span ng-click="removeApp()">X</span>
             </div>
         </div>
-        <div flex></div>
+        <div flex='5'></div>
+        <div flex class="md-padding">
+            <md-label> App Name* </md-label>
+            <md-input-container>
+                <input ng-model="app.name">
+            </md-input-container>
+            <md-button class="md-primary" ng-click="toStep2()">continue</md-button>
+        </div>
     </div>
-    <div flex layout="row" ng-show='createApp.show'>
-    	<div flex='30'></div>
+   <!--  <div flex layout="row" ng-show='createApp.show'>
+        <div flex='30'></div>
         <div flex='40'>
-        <md-label> App Name* </md-label>
-        <md-input-container>
-            <input ng-model="app.name">
-        </md-input-container>
-        <md-button class="md-primary" ng-click="submitApp()">submit</md-button>
+            <md-label> App Name* </md-label>
+            <md-input-container>
+                <input ng-model="app.name">
+            </md-input-container>
+            <md-button class="md-primary" ng-click="submitApp()">submit</md-button>
         </div>
         <div flex='30'></div>
+    </div> -->
+    <div flex layout="column" ng-show="createapp.stepTwo" class="md-padding">
+    	<a href="https://github.com/login/oauth/authorize?client_id=a8a8510c271876baa741&state=asdfgh&redirect_uri=http://localhost:3000/#/callback_github">oauthTest</a>
+    	<!-- <md-select ng-model="selectedUser" style="background-color: white; min-width:150px" placeholder="select teacher">
+                            <md-option ng-value="t.user_id" ng-repeat="t in teachers">
+                                <md-label>{{t.first_name+' '+t.last_name}}</md-label><img src='/images/icons/child_speaking.png' width="50px"></md-option>
+                        </md-select> -->
     </div>
 </div>

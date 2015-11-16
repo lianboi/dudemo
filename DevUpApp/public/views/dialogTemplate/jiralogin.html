@@ -1,7 +1,7 @@
 <md-dialog class="md-padding">
-    <div layout="column" flex>
+    <div layout="column" flex ng-model="currentapp">
         <div layout="column" flex>
-            <div flex>please provide the url of your jira website*</div>
+            <div flex>please provide the url of your {{currentapp.name}} website*</div>
             <div flex>
                 <md-input-container>
                 	<md-label>url</md-label>
@@ -10,7 +10,7 @@
             </div>
         </div>
         <div layout="column" flex>
-            <div flex>your username for the jira website*</div>
+            <div flex>your username for the {{currentapp.name}} website*</div>
             <div flex>
                 <md-input-container>
                 	<md-label>username</md-label>
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div layout="column" flex>
-            <div flex>your password for the jira website*</div>
+            <div flex>your password for the {{currentapp.name}} website*</div>
             <div flex>
                 <md-input-container>
                 	<md-label>password</md-label>

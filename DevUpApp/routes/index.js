@@ -46,13 +46,22 @@ router.post('/login', function(req, res, next) {
             console.log(rows[0]['hash']);
             bcrypt.compare(user.password, rows[0]['hash'], function(err, result) {
                 if (result) {
-                    res.send({"status":"Ok", "message":"login success!"});
+                    res.send({
+                        "status": "Ok",
+                        "message": "login success!"
+                    });
                 } else {
-                    res.send({"status":"Failed","message":"invalid password!"});
+                    res.send({
+                        "status": "Failed",
+                        "message": "invalid password!"
+                    });
                 }
             });
         } else {
-            res.send({"status":"Failed","message":"invalid username or password!"});
+            res.send({
+                "status": "Failed",
+                "message": "invalid username or password!"
+            });
             // res.send("login failed!");
         }
     });
@@ -106,7 +115,7 @@ router.post('/authjira', function(req, res, next) {
                     res.send(error);
                 }
             });
-            connection.end();
+            
         } else {
             res.send("authentication error!");
         }
@@ -115,10 +124,44 @@ router.post('/authjira', function(req, res, next) {
     request(options, callback);
 });
 
+function authjira(req, res, next) {
+    console.log(req.body);
+    var authHeader = new Buffer(req.body.data.jira.username + ':' + req.body.data.jira.password).toString('base64');
+    var options = {
+        url: req.body.data.jira.url + '/rest/auth/1/session', //"https://lbjiratest.atlassian.net/rest/api/2/search?jql=project=test",//',
+        method: 'GET',
+        headers: {
+            "Authorization": "Basic " + new Buffer(req.body.data.jira.username + ':' + req.body.data.jira.password).toString('base64')
+        }
+    };
+    console.log(options);
+
+    function callback(err, response, body) {
+        var data = req.body.data;
+        var statement = "INSERT INTO userappauthentication(user_id, exapp_id, exapp_url, authheader) VALUES(" +
+            data.user_id + ",1" + ",'" + data.jira.url + "','" + authHeader + "')";
+        if (response.statusCode == 200) {
+            connection.query(statement, function(error, rows, fields) {
+                console.log(statement);
+                if (!error) {
+                    res.send(response);
+                } else {
+                    res.send(error);
+                }
+            });
+            
+        } else {
+            res.send("authentication error!");
+        }
+        //res.send(response);
+    }
+    request(options, callback);
+}
+
 /** getting jira project ***/
 router.get('/jiraproject', function(req, res, next) {
     console.log(req.query);
-   // res.send(req.query);
+    // res.send(req.query);
     var inputdata = req.query; //user.user_id, project.project_id
     var statement = "SELECT externalAppUrl, authHeader FROM userappauthentication WHERE user_id='" + inputdata.user_id + "' AND externalApp_id = 1 LIMIT 1";
     console.log(statement);
@@ -149,7 +192,7 @@ router.get('/jiraproject', function(req, res, next) {
 /*** getting jira issues of the project ***/
 router.get('/jiraissue', function(req, res, next) {
     console.log(req.query);
-   // res.send(req.query);
+    // res.send(req.query);
     var inputdata = req.query; //user.user_id, project.project_id
     var statement = "SELECT externalAppUrl, authHeader FROM userappauthentication WHERE user_id='" + inputdata.user_id + "' AND externalApp_id = 1 LIMIT 1";
     console.log(statement);
@@ -196,5 +239,34 @@ router.post('/testAuth', function(req, res, next) {
 
 });
 
+/*** get the external app table ****/
+router.get('/externalapp', function(req, res, next) {
+    var statement = "SELECT exapp_id AS id, exappname AS name FROM externalapp";
+    connection.query(statement, function(error, rows, fields) {
+        if (!error && rows.length > 0) {
+            res.send(rows);
+        } else {
+            res.send(error);
+        }
+    })
+});
+
+/***** authenticating external apps *****/
+router.post('/authenticateExternalApp', function(req, res, next) {
+    authjira(req, res, next);
+});
+
+router.post('/teastOauth', function(req, res, next){
+    var state = req.body.data.state;
+    var code = req.body.data.code;
+    var options = {
+        url: "https://github.com/login/oauth/access_token?",
+        method: "POST"
+    }
+    function callback(err, response, body){
+        res.send(response);
+    }
+    request(options, callback);
+});
 
 module.exports = router;
