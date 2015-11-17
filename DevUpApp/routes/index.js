@@ -48,7 +48,8 @@ router.post('/login', function(req, res, next) {
                 if (result) {
                     res.send({
                         "status": "Ok",
-                        "message": "login success!"
+                        "message": "login success!",
+                        "data":{"user_id":rows[0]['user_id']}
                     });
                 } else {
                     res.send({
@@ -163,12 +164,12 @@ router.get('/jiraproject', function(req, res, next) {
     console.log(req.query);
     // res.send(req.query);
     var inputdata = req.query; //user.user_id, project.project_id
-    var statement = "SELECT externalAppUrl, authHeader FROM userappauthentication WHERE user_id='" + inputdata.user_id + "' AND externalApp_id = 1 LIMIT 1";
+    var statement = "SELECT exapp_url, authheader FROM userappauthentication WHERE user_id='" + inputdata.user_id + "' AND exapp_id = 1 LIMIT 1";
     console.log(statement);
     connection.query(statement, function(error, rows, fields) {
         if (!error) {
-            inputdata.externalAppUrl = rows[0]['externalAppUrl'];
-            inputdata.authHeader = rows[0]['authHeader'];
+            inputdata.externalAppUrl = rows[0]['exapp_url'];
+            inputdata.authHeader = rows[0]['authheader'];
             var options = {
                 url: inputdata.externalAppUrl + '/rest/api/latest/project', //"https://lbjiratest.atlassian.net/rest/api/2/search?jql=project=test",//',
                 method: 'GET',
@@ -251,6 +252,21 @@ router.get('/externalapp', function(req, res, next) {
     })
 });
 
+router.get('/callback_github', function(req, res, next){
+    var state = req.query.state;
+    var code = req.query.code;
+    var options = {
+        url: "https://github.com/login/oauth/access_token?client_id=a8a8510c271876baa741&client_secret=821c246d4a0f9c85c365f709676ea303948b691e&code="+code+"&state="+state,
+        method: "POST"
+    }
+    function callback(err, response, body){
+        console.log(response);
+        res.redirect("http://localhost:3000/#/main");
+    }
+    request(options, callback);
+});
+
+
 /***** authenticating external apps *****/
 router.post('/authenticateExternalApp', function(req, res, next) {
     authjira(req, res, next);
@@ -260,13 +276,41 @@ router.post('/teastOauth', function(req, res, next){
     var state = req.body.data.state;
     var code = req.body.data.code;
     var options = {
-        url: "https://github.com/login/oauth/access_token?",
+        url: "https://github.com/login/oauth/access_token?client_id=a8a8510c271876baa741&client_secret=821c246d4a0f9c85c365f709676ea303948b691e&code="+code+"&state="+state,
         method: "POST"
     }
     function callback(err, response, body){
         res.send(response);
     }
     request(options, callback);
+});
+
+router.post('/check_insert_app', function(req, res, next){
+    var user_id = req.body.data.user_id;
+    var appname = req.body.data.appname;
+
+    var statement = "SELECT * FROM devapp WHERE appname = '"+appname+"'";
+    connection.query(statement, function(err, rows, fields){
+        if(!err && rows.length > 0){
+            res.send({"status":"Failed", "message":"Appname already exist!"});
+        } else if(err){
+            res.send({"status":"Failed", "message":"Somenthing went wrong, Please try again later!"});
+        } else {
+            var statement1 = "INSERT INTO devapp(appname) VALUES('"+appname+"')";
+            connection.query(statement1, function(err1, row1, fields1){
+                if(!err1){
+                    connection.query("SELECT app_id FROM devapp WHERE appname = '"+appname+"' LIMIT 1", function(err2, rows2, fields2){
+                        if(!err2){
+                            res.send({"status":"Ok", "message":"App successfully registered.", "data":{"app_id":rows2[0]['app_id']}});
+                        } else {
+                            res.send({"status":"Failed", "message":"Somenthing went wrong, Please try again later!"});
+                        }
+                    });
+                    
+                }
+            });
+        }
+    });
 });
 
 module.exports = router;
