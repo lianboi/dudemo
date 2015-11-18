@@ -363,6 +363,7 @@ router.post('/createapp', function(req, res, next) {
     }
 });
 
+//getjiraissues();
 function getjiraissues(user_id, app_id, devapp_jira_id) { /**/
 
     var statement = "select jp.devapp_jira_id,jp.projectkey as pkey, uaa.exapp_url as url, uaa.authheader as authheader from jiraproject jp, devapp_jira_lookup djl, user_devapp_lookup udl , userappauthentication uaa where(udl.devapp_id=djl.app_id and jp.devapp_jira_id = djl.devapp_jira_id and udl.user_id= uaa.user_id and udl.user_id = ? and udl.devapp_id=? and jp.devapp_jira_id=?)";
@@ -404,6 +405,27 @@ function getjiraissues(user_id, app_id, devapp_jira_id) { /**/
     });
 
 }
-//getjiraissues();
+
+/*** getting the list of user apps ***/
+router.get('/userapps', function(req, res, next){
+    var user_id = req.query.user_id;
+    var statement = "select da.app_id, da.appname from devapp da, user_devapp_lookup udl where da.app_id=udl.devapp_id and udl.user_id=?";
+    connection.query(statement,[user_id], function(err, rows, fields){
+        if(!err && rows.length){
+            res.send({"status":"Ok","message":"userapps successfully retrieved!", "data":rows});
+        }else{
+            res.send({"status":"Failed","message":"Either the user have no apps or Somenthing went wrong!", "data":{}});
+        }
+    });
+});
+
+/*** getting the appdetails ***/
+router.get('/getappdetails', function(req, res, next){
+    var app_id = req.query.app_id;
+    var statement = "select ji.* from jiraissue ji, jira_project_issue_lookup jpil, devapp_jira_lookup djl where djl.devapp_jira_id = jpil.devapp_jira_id and ji.devapp_jiraissue_id = jpil.devapp_jiraissue_id and djl.app_id=?";
+    connection.query(statement,[app_id], function(err, rows, fields){
+        res.send({"status":"Ok","message":"userapps successfully retrieved!", "data":rows});
+    });
+});
 
 module.exports = router;

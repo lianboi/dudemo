@@ -42,6 +42,8 @@ devUp.controller('mainCtrl', ['$scope', '$http', '$mdDialog', function($scope, $
     $scope.viewDashboard = function(){
     	$scope.createApp.show = false;
         $scope.hidedashboard = false;
+        $scope.stepTwo = false;
+        $scope.showappselection  = false;
     };
     $scope.checkappname = function(){
     	if($scope.app.name){
@@ -58,6 +60,26 @@ devUp.controller('mainCtrl', ['$scope', '$http', '$mdDialog', function($scope, $
     			}
     		}, function(err){});
     	}
+    };
+    $http.get("http://localhost:3000/userapps?user_id="+session.user.user_id).then(function(res){
+    	if(res.data.status == "Ok"){
+    		$scope.userapps = res.data.data;
+    	}
+    }, function(err){
+    	console.log(err);
+    });
+
+    $scope.showappdetails = function(app_id){
+    	$http.get("http://localhost:3000/getappdetails?app_id="+app_id).then(function(res){
+    		var data = res.data;
+    		if(data.status=="Ok"){
+    			$scope.jiraissues = data.data;
+    		}else{
+    			console.log(res);
+    		}
+    	}, function(err){
+    		console.log(err);
+    	});
     };
     
     $scope.addApps = function(evt, x, z) {

@@ -6,12 +6,18 @@
         <span flex></span>
     </div>
     <div layout="row" ng-hide="hidedashboard" class="md-padding">
-        <div flex="10" layout="column">
-            <md-label>App List</md-label>
-            <div ng-repeat="apps in userapps">{{apps.name}}</div>
+        <div flex="30" layout="column">
+            <md-label style="font-weight:bold;">App List</md-label>
+            <div ng-repeat="apps in userapps" class="md-padding chooseapp" style="cursor:pointer;" ng-click="showappdetails(apps.app_id);">{{apps.appname}}</div>
         </div>
-        <div flex>
-            <md-label>Selected app details</md-label>
+        <div flex="40">
+            <md-label style="font-weight:bold;">Selected app details</md-label>
+            <div style="border:1px solid green; border-radius:8px">
+            	<div ng-repeat="issue in jiraissues" layout="row">
+            		<div flex='60' class="md-padding">{{issue.jira_issue_desc}}</div>
+            		<div flex class="md-padding">{{issue.issuestatus}}</div>
+            	</div>
+            </div>
         </div>
     </div>
     <div layout="row" ng-show="createApp.show" class="md-padding">
