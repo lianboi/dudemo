@@ -92,9 +92,14 @@ devUp.controller('mainCtrl', ['$scope', '$http', '$mdDialog', function($scope, $
         });
     };
     $scope.submitApp = function(){
-
-    	$http.post("http://localhost:3000/createApp",{data:{user_id:1,app_name:$scope.app.name,}})
-    }
+    	var data = JSON.parse(sessionStorage.sessionData);
+    	data.jira = $scope.selectedproject;
+    	$http.post("http://localhost:3000/createApp",{data:data}).then(function(res){
+    		console.log(res);
+    	}, function(err){
+    		console.log(err);
+    	});
+    };
 
     $http.get("http://localhost:3000/externalapp").then(function(res) {
         $scope.createApp.apps = res.data;

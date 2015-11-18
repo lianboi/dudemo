@@ -49,7 +49,9 @@ router.post('/login', function(req, res, next) {
                     res.send({
                         "status": "Ok",
                         "message": "login success!",
-                        "data":{"user_id":rows[0]['user_id']}
+                        "data": {
+                            "user_id": rows[0]['user_id']
+                        }
                     });
                 } else {
                     res.send({
@@ -116,7 +118,7 @@ router.post('/authjira', function(req, res, next) {
                     res.send(error);
                 }
             });
-            
+
         } else {
             res.send("authentication error!");
         }
@@ -150,7 +152,7 @@ function authjira(req, res, next) {
                     res.send(error);
                 }
             });
-            
+
         } else {
             res.send("authentication error!");
         }
@@ -252,14 +254,15 @@ router.get('/externalapp', function(req, res, next) {
     })
 });
 
-router.get('/callback_github', function(req, res, next){
+router.get('/callback_github', function(req, res, next) {
     var state = req.query.state;
     var code = req.query.code;
     var options = {
-        url: "https://github.com/login/oauth/access_token?client_id=a8a8510c271876baa741&client_secret=821c246d4a0f9c85c365f709676ea303948b691e&code="+code+"&state="+state,
+        url: "https://github.com/login/oauth/access_token?client_id=a8a8510c271876baa741&client_secret=821c246d4a0f9c85c365f709676ea303948b691e&code=" + code + "&state=" + state,
         method: "POST"
     }
-    function callback(err, response, body){
+
+    function callback(err, response, body) {
         console.log(response);
         res.redirect("http://localhost:3000/#/main");
     }
@@ -272,45 +275,135 @@ router.post('/authenticateExternalApp', function(req, res, next) {
     authjira(req, res, next);
 });
 
-router.post('/teastOauth', function(req, res, next){
+router.post('/teastOauth', function(req, res, next) {
     var state = req.body.data.state;
     var code = req.body.data.code;
     var options = {
-        url: "https://github.com/login/oauth/access_token?client_id=a8a8510c271876baa741&client_secret=821c246d4a0f9c85c365f709676ea303948b691e&code="+code+"&state="+state,
+        url: "https://github.com/login/oauth/access_token?client_id=a8a8510c271876baa741&client_secret=821c246d4a0f9c85c365f709676ea303948b691e&code=" + code + "&state=" + state,
         method: "POST"
     }
-    function callback(err, response, body){
+
+    function callback(err, response, body) {
         res.send(response);
     }
     request(options, callback);
 });
 
-router.post('/check_insert_app', function(req, res, next){
+router.post('/check_insert_app', function(req, res, next) {
     var user_id = req.body.data.user_id;
     var appname = req.body.data.appname;
 
-    var statement = "SELECT * FROM devapp WHERE appname = '"+appname+"'";
-    connection.query(statement, function(err, rows, fields){
-        if(!err && rows.length > 0){
-            res.send({"status":"Failed", "message":"Appname already exist!"});
-        } else if(err){
-            res.send({"status":"Failed", "message":"Somenthing went wrong, Please try again later!"});
+    var statement = "SELECT * FROM devapp WHERE appname = '" + appname + "'";
+    connection.query(statement, function(err, rows, fields) {
+        if (!err && rows.length > 0) {
+            res.send({
+                "status": "Failed",
+                "message": "Appname already exist!"
+            });
+        } else if (err) {
+            res.send({
+                "status": "Failed",
+                "message": "Somenthing went wrong, Please try again later!"
+            });
         } else {
-            var statement1 = "INSERT INTO devapp(appname) VALUES('"+appname+"')";
-            connection.query(statement1, function(err1, row1, fields1){
-                if(!err1){
-                    connection.query("SELECT app_id FROM devapp WHERE appname = '"+appname+"' LIMIT 1", function(err2, rows2, fields2){
-                        if(!err2){
-                            res.send({"status":"Ok", "message":"App successfully registered.", "data":{"app_id":rows2[0]['app_id']}});
+            var statement1 = "INSERT INTO devapp(appname) VALUES('" + appname + "')";
+            connection.query(statement1, function(err1, row1, fields1) {
+                if (!err1) {
+                    connection.query("SELECT app_id FROM devapp WHERE appname = '" + appname + "' LIMIT 1", function(err2, rows2, fields2) {
+                        if (!err2) {
+                            res.send({
+                                "status": "Ok",
+                                "message": "App successfully registered.",
+                                "data": {
+                                    "app_id": rows2[0]['app_id']
+                                }
+                            });
                         } else {
-                            res.send({"status":"Failed", "message":"Somenthing went wrong, Please try again later!"});
+                            res.send({
+                                "status": "Failed",
+                                "message": "Somenthing went wrong, Please try again later!"
+                            });
                         }
                     });
-                    
+
                 }
             });
         }
     });
 });
+
+router.post('/createapp', function(req, res, next) {
+    var data = req.body.data;
+    if (data.jira) {
+        var statement = "INSERT INTO jiraproject(jira_project_id,projectname,projecturl,projectkey) VALUES('" +
+            data.jira.id + "','" + data.jira.name + "','" + data.jira.self + "','" + data.jira.key + "')";
+
+        connection.query("INSERT INTO user_devapp_lookup(user_id,devapp_id) VALUES(?,?)", [data.user.user_id, data.app.id], function() {
+            connection.query(statement, function(err, result) {
+                if (!err) {
+                    //var statement2 = 
+                    connection.query("INSERT INTO devapp_jira_lookup(app_id,devapp_jira_id) VALUES(?,?)", [data.app.id, result.insertId], function(err1, result1) {
+                        if (!err1) {
+                            getjiraissues(data.user.user_id, data.app.id, result.insertId);
+                            res.send({
+                                "status": "Ok",
+                                "message": "App successfully created!"
+                            });
+                        } else {
+                            console.log(err1);
+                            res.send(err1);
+                        }
+
+                    });
+                } else {
+                    res.send(err);
+                }
+            });
+        });
+    }
+});
+
+function getjiraissues(user_id, app_id, devapp_jira_id) { /**/
+
+    var statement = "select jp.devapp_jira_id,jp.projectkey as pkey, uaa.exapp_url as url, uaa.authheader as authheader from jiraproject jp, devapp_jira_lookup djl, user_devapp_lookup udl , userappauthentication uaa where(udl.devapp_id=djl.app_id and jp.devapp_jira_id = djl.devapp_jira_id and udl.user_id= uaa.user_id and udl.user_id = ? and udl.devapp_id=? and jp.devapp_jira_id=?)";
+    connection.query(statement, [user_id, app_id, devapp_jira_id], function(err, rows, fields) {
+        if (!err) {
+            var options = {
+                url: rows[0].url + '/rest/api/latest/search?jql=project=' + rows[0].pkey, //"https://lbjiratest.atlassian.net/rest/api/2/search?jql=project=test",//',
+                method: 'GET',
+                headers: {
+                    "Authorization": "Basic " + rows[0].authheader
+                }
+            };
+
+            function callback(err, response, body) {
+                console.log(JSON.parse(body));
+                var issues = JSON.parse(body).issues;
+                issues.forEach(function(data) {
+                    var temp = "INSERT INTO jiraissue(jira_issue_id, jira_issue_desc, assignee, reporter,issueurl, issuestatus) VALUES(?,?,?,?,?,?)";
+                    connection.query(temp, [data.id, data.fields.summary, data.fields.assignee.name, data.fields.reporter.name, data.self, data.fields.status.name], function(error, result) {
+                        if (!error) {
+                            connection.query("INSERT INTO jira_project_issue_lookup(devapp_jira_id,devapp_jiraissue_id) VALUES(?,?)", [rows[0].devapp_jira_id, result.insertId], function(e2, result2) {
+                                if (!e2) {
+                                    console.log("no err");
+                                } else {
+                                    console.log(e2);
+                                }
+                            });
+                        } else {
+                            console.log(error);
+                        }
+                    });
+                });
+            }
+            request(options, callback);
+        } else {
+            console.log(err);
+        }
+
+    });
+
+}
+//getjiraissues();
 
 module.exports = router;
